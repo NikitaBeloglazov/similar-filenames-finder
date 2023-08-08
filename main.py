@@ -3,6 +3,8 @@ import time
 import sys
 from datetime import datetime
 from similar_text import similar_text
+from colorama import init, Fore, Style
+init()
 
 def update_msg(text):
 	message = f'\r{text}'
@@ -53,8 +55,8 @@ try:
 				already_logged_files_buffer[checking_file] = filee
 				if reported_files.get(similarity, "_") == "_":
 					reported_files[str(similarity)] = []
-				reported_files[str(similarity)].append(f" - = {similarity}% = -\n{filee}\n{checking_file}")
-			update_msg(f"- ({balancer(str(round((local_status/filelist_len)*100)), 3)}%) {str(general_status)} / {filelist_len_str} ({str(round((general_status/filelist_len)*100))}%) • ETA: {eta_format} • Iterations made: {iterations_made}") # | Average per file: {average_format} | Local: {str(local_status)} / {filelist_len_str} ()")
+				reported_files[str(similarity)].append(f"{Fore.CYAN} - = {similarity}% = -{Style.RESET_ALL}\n{filee}\n{checking_file}")
+			update_msg(f"- ({balancer(str(round((local_status/filelist_len)*100)), 3)}%) {Fore.CYAN}{str(general_status)} / {filelist_len_str} ({str(round((general_status/filelist_len)*100))}%){Style.RESET_ALL} • ETA: {eta_format} {Style.DIM}• Iterations made: {iterations_made}{Style.RESET_ALL}") # | Average per file: {average_format} | Local: {str(local_status)} / {filelist_len_str} ()")
 		times_for_eta.append(time.time() - start_iteration_time)
 
 		average_time = sum(times_for_eta) / len(times_for_eta)
