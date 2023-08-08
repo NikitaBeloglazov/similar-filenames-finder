@@ -1,9 +1,8 @@
-from similar_text import similar_text
 import os
 import time
 import sys
-import pprint
 from datetime import datetime
+from similar_text import similar_text
 
 def update_msg(text):
 	message = f'\r{text}'
@@ -62,11 +61,10 @@ try:
 		eta_time = average_time * (filelist_len - general_status)
 
 		average_format = datetime.utcfromtimestamp(average_time).strftime('%M:%S')
-
 		eta_format = datetime.utcfromtimestamp(eta_time).strftime('%H:%M:%S')
 
 except KeyboardInterrupt:
-	pass
+	print("\n\nCtrl+C detected! Exiting..", end="")
 
 print("\n")
 
@@ -74,5 +72,3 @@ reported_files = sort_and_reverse_list(reported_files)
 for percent_in_dict in reported_files:
 	for items_in_percent in reported_files[percent_in_dict]:
 		print(items_in_percent, end="\n\n")
-
-print(already_logged_files_buffer)
