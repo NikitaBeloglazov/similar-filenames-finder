@@ -3,6 +3,7 @@ import os
 import time
 import sys
 import pprint
+from datetime import datetime
 
 def update_msg(text):
 	message = f'\r{text}'
@@ -30,13 +31,22 @@ general_status = 0
 
 already_logged_files_buffer = {}
 reported_files = {}
+times_for_eta = []
+
+average_format = "??:??"
+eta_format = "??:??:??"
+
+iterations_made = 0
+
+
 for filee in filelist:
 	general_status += 1
-
 	local_status = 0
 
+	start_iteration_time = time.time()
 	for checking_file in filelist:
 		local_status += 1
+		iterations_made += 1
 		similarity = similar_text(filee, checking_file)
 		if similarity >= threshold:
 			if filee == checking_file or already_logged_files_buffer.get(filee, "_") == checking_file:
@@ -45,7 +55,15 @@ for filee in filelist:
 			if reported_files.get(similarity, "_") == "_":
 				reported_files[str(similarity)] = []
 			reported_files[str(similarity)].append(f" - = {similarity}% = -\n{filee}\n{checking_file}")
-		update_msg(f"- ({balancer(str(round((local_status/filelist_len)*100)), 3)}%) {str(general_status)} / {filelist_len_str} ({str(round((general_status/filelist_len)*100))}%)") #| Local: {str(local_status)} / {filelist_len_str} ()")
+		update_msg(f"- ({balancer(str(round((local_status/filelist_len)*100)), 3)}%) {str(general_status)} / {filelist_len_str} ({str(round((general_status/filelist_len)*100))}%) • ETA: {eta_format} • Iterations made: {iterations_made}") # | Average per file: {average_format} | Local: {str(local_status)} / {filelist_len_str} ()")
+	times_for_eta.append(time.time() - start_iteration_time)
+
+	average_time = sum(times_for_eta) / len(times_for_eta)
+	eta_time = average_time * (filelist_len - general_status)
+
+	average_format = datetime.utcfromtimestamp(average_time).strftime('%M:%S')
+
+	eta_format = datetime.utcfromtimestamp(eta_time).strftime('%H:%M:%S')
 
 print("\n")
 
